@@ -33,6 +33,9 @@ private:
     const char* publishTopic;
     float temperature = 25.0;  // Default temperature
     unsigned long lastPublishTime = 0;
+    
+    // MongoDB crop ID
+    const char* cropId = "68c93e6e8fbcffb93a2393d5";
 
     float readEC() {
         float conversionFactor = 0.5;
@@ -51,10 +54,13 @@ private:
     }
 
     void publishData(float ecValue) {
-        char payload[20];
-        snprintf(payload, sizeof(payload), "%.2f", ecValue);
+        char payload[80];
+        snprintf(payload, sizeof(payload), "{\"crop_id\":\"%s\",\"ec_value\":%.2f}", 
+                cropId, ecValue);
         mqtt.publish(publishTopic, payload);
-        Serial.print("Published EC: ");
-        Serial.println(payload);
+        Serial.print("EC [Crop: ");
+        Serial.print(cropId);
+        Serial.print("]: ");
+        Serial.println(ecValue);
     }
 };
