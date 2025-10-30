@@ -2,11 +2,12 @@
 #include "wiFiManager/wifiManager.h"
 #include "mqttHandler/mqttHandler.h"
 #include "sensors/ec/ecSensor.h"
+#include "sensors/temprature/temperatureSensor.h"
 
 // Configurations
 const char* WIFI_SSID = "Qwerty 2.4G";
 const char* WIFI_PASS = "Kshitij0509";
-const char* MQTT_SERVER = "192.168.1.11";
+const char* MQTT_SERVER = "192.168.1.104";
 const int MQTT_PORT = 1883;
 
 // Manager instances
@@ -15,6 +16,7 @@ MqttHandler mqtt(wifi, MQTT_SERVER, MQTT_PORT);
 
 // Sensor instances
 ECSensor ecSensor(mqtt, 32, "sensors/ec");
+TemperatureSensor tempSensor(mqtt, 2, "sensors/temperature");
 
 // MQTT Callback function
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -44,6 +46,7 @@ void setup() {
   
   // Initialize sensors
   ecSensor.begin();
+  tempSensor.begin();
 }
 
 void loop() {
@@ -53,6 +56,7 @@ void loop() {
   
   // Update sensors
   ecSensor.update();
+  tempSensor.update();
   
   // Heartbeat
   static unsigned long lastHeartbeat = 0;

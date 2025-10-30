@@ -1,6 +1,7 @@
 // sensors/temperatureSensor.h
 #pragma once
-#include "../mqttHandler/mqttHandler.h"
+#include <Arduino.h>
+#include "../../mqttHandler/mqttHandler.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
@@ -10,8 +11,23 @@ public:
         : mqtt(mqttHandler), oneWire(pin), sensors(&oneWire), publishTopic(topic) {}
     
     void begin() {
+        Serial.println("=== Temperature Sensor Begin ===");
+        pinMode(2, INPUT_PULLUP);  // Enable internal pull-up
         sensors.begin();
+        
+        // Debug: Check if sensor is detected
+        int deviceCount = sensors.getDeviceCount();
+        Serial.print("DS18B20 devices found: ");
+        Serial.println(deviceCount);
+        
+        if (deviceCount == 0) {
+            Serial.println("No DS18B20 found! ADD 4.7k RESISTOR between GPIO2 and 3.3V!");
+        } else {
+            Serial.println("DS18B20 detected successfully!");
+        }
+        
         lastPublishTime = millis();
+        Serial.println("=== Temperature Sensor Init Complete ===");
     }
     
     void update() {
@@ -38,6 +54,12 @@ private:
     float readTemperature() {
         sensors.requestTemperatures();
         float tempC = sensors.getTempCByIndex(0);
+        
+        if (tempC == DEVICE_DISCONNECTED_C) {
+            Serial.println("Error: DS18B20 sensor not connected!");
+            return -999.0;  // Return error value
+        }
+        
         lastTemperature = tempC;
         return tempC;
     }
