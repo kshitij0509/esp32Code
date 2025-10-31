@@ -45,7 +45,7 @@ private:
             analogSum += analogRead(pin);
             delay(10);
         }
-        
+        // ec calibration through temperature
         float voltage = (analogSum / 10.0) * (3.3 / 4095.0);
         float tdsValue = (133.42 * pow(voltage, 3) - 255.86 * pow(voltage, 2) + 857.39 * voltage) * 0.5;
         tdsValue = tdsValue / (1.0 + 0.02 * (temperature - 25.0));

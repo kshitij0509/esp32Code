@@ -54,9 +54,17 @@ void loop() {
   wifi.maintain();
   mqtt.loop();
   
-  // Update sensors
-  ecSensor.update();
+  // Update temperature sensor first
   tempSensor.update();
+  
+  // Get current temperature and update EC sensor for accurate compensation ec calibration
+  float currentTemp = tempSensor.getLastTemperature();
+  if (currentTemp > -999.0) {  // Valid temperature reading
+    ecSensor.setTemperature(currentTemp);  // This updates line 34 temperature variable
+  }
+  
+  // Update EC sensor (will now use actual temperature in calculation)
+  ecSensor.update();
   
   // Heartbeat
   static unsigned long lastHeartbeat = 0;
