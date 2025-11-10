@@ -4,6 +4,7 @@
 #include "sensors/ec/ecSensor.h"
 #include "sensors/temprature/temperatureSensor.h"
 #include "sensors/dht/dhtSensor.h"
+#include "sensors/ph/phSensor.h"
 
 // Configurations
 const char* WIFI_SSID = "Qwerty 2.4G";
@@ -19,6 +20,7 @@ MqttHandler mqtt(wifi, MQTT_SERVER, MQTT_PORT);
 ECSensor ecSensor(mqtt, 32, "sensors/ec");
 TemperatureSensor tempSensor(mqtt, 2, "sensors/temperature");
 DHTSensor dhtSensor(mqtt, 4);  // DHT22 on GPIO 4
+PHSensor phSensor(mqtt, 35, "sensors/ph/value");  // pH sensor on GPIO 35
 
 // MQTT Callback function
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -50,6 +52,7 @@ void setup() {
   ecSensor.begin();
   tempSensor.begin();
   dhtSensor.begin();
+  phSensor.begin();
 }
 
 void loop() {
@@ -71,6 +74,9 @@ void loop() {
   
   // Update EC sensor (will now use actual temperature in calculation)
   ecSensor.update();
+  
+  // Update pH sensor
+  phSensor.update();
   
   // Heartbeat
   static unsigned long lastHeartbeat = 0;
