@@ -57,7 +57,7 @@ private:
         
         if (tempC == DEVICE_DISCONNECTED_C) {
             Serial.println("Error: DS18B20 sensor not connected!");
-            return -999.0;  // Return error value
+            return -1.0;  // Return error value
         }
         
         lastTemperature = tempC;

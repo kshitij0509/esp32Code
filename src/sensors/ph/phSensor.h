@@ -78,12 +78,24 @@ private:
     }
 
     void publishData() {
-        char phPayload[8];
-        dtostrf(lastPH, 5, 2, phPayload);
+        // Check if sensor is connected (similar to EC sensor)
+        float rawReading = analogRead(pin);
+        char payload[120];
         
-        mqtt.publish(publishTopic, phPayload);
+        if (rawReading <= 10 || rawReading >= 4085) {
+            // Sensor disconnected
+            snprintf(payload, sizeof(payload), 
+                    "{\"crop_id\":\"68c93e6e8fbcffb93a2393d5\",\"ph\":null,\"status\":\"disconnected\"}");
+        } else {
+            // Sensor connected
+            snprintf(payload, sizeof(payload), 
+                    "{\"crop_id\":\"68c93e6e8fbcffb93a2393d5\",\"ph\":%.2f,\"status\":\"connected\"}", 
+                    lastPH);
+        }
+        
+        mqtt.publish(publishTopic, payload);
         
         Serial.print("Published pH: ");
-        Serial.println(phPayload);
+        Serial.println(lastPH, 2);
     }
 };

@@ -58,9 +58,7 @@ private:
         snprintf(payload, sizeof(payload), "{\"crop_id\":\"%s\",\"ec_value\":%.2f}", 
                 cropId, ecValue);
         mqtt.publish(publishTopic, payload);
-        Serial.print("EC [Crop: ");
-        Serial.print(cropId);
-        Serial.print("]: ");
+        Serial.print("EC Value: ");
         Serial.println(ecValue);
     }
 };

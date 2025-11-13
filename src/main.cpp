@@ -20,7 +20,7 @@ MqttHandler mqtt(wifi, MQTT_SERVER, MQTT_PORT);
 ECSensor ecSensor(mqtt, 32, "sensors/ec");
 TemperatureSensor tempSensor(mqtt, 2, "sensors/temperature");
 DHTSensor dhtSensor(mqtt, 4);  // DHT22 on GPIO 4
-PHSensor phSensor(mqtt, 35, "sensors/ph/value");  // pH sensor on GPIO 35
+PHSensor phSensor(mqtt, 35, "sensors/ph");  // pH sensor on GPIO 35
 
 // MQTT Callback function
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -68,7 +68,7 @@ void loop() {
   
   // Get current temperature and update EC sensor for accurate compensation ec calibration
   float currentTemp = tempSensor.getLastTemperature();
-  if (currentTemp > -999.0) {  // Valid temperature reading
+  if (currentTemp > -1.0) {  // Valid temperature reading
     ecSensor.setTemperature(currentTemp);  // This updates line 34 temperature variable
   }
   
