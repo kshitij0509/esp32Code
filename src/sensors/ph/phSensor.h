@@ -37,7 +37,7 @@ private:
     float voltageBuffer[5] = {1.65, 1.65, 1.65, 1.65, 1.65};  // Moving average buffer
     int bufferIndex = 0;
     
-    // Calibration values (adjust based on your sensor)
+    // Calibration values (original working version)
     const float VOLTAGE_REF = 3.3;  // ESP32 reference voltage
     const float PH_NEUTRAL = 7.0;
     const float VOLTAGE_NEUTRAL = 1.65;  // Voltage at pH 7
