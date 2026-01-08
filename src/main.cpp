@@ -9,7 +9,7 @@
 // Configurations
 const char* WIFI_SSID = "Qwerty 2.4G";
 const char* WIFI_PASS = "Kshitij0509";
-const char* MQTT_SERVER = "192.168.1.23";
+const char* MQTT_SERVER = "192.168.1.200";
 const int MQTT_PORT = 1883;
 
 // Manager instances

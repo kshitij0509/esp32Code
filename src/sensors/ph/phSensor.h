@@ -40,8 +40,8 @@ private:
     // Calibration values (original working version)
     const float VOLTAGE_REF = 3.3;  // ESP32 reference voltage
     const float PH_NEUTRAL = 7.0;
-    const float VOLTAGE_NEUTRAL = 1.65;  // Voltage at pH 7
-    const float PH_SLOPE = -3.5;  // pH per volt
+    const float VOLTAGE_NEUTRAL = 2.46;  // Voltage at pH 7
+    const float PH_SLOPE = 2.70;  // pH per volt
 
     void readSensorData() {
         long sum = 0;
@@ -57,15 +57,21 @@ private:
         voltageBuffer[bufferIndex] = voltage;
         bufferIndex = (bufferIndex + 1) % 5;
         
+        Serial.print("voltage: ");
+        Serial.println(voltage, 3);
         // Calculate moving average
         float avgVoltage = 0;
         for (int i = 0; i < 5; i++) {
             avgVoltage += voltageBuffer[i];
         }
         avgVoltage /= 5.0;
+
+        Serial.print("Avg voltage: ");
+        Serial.println(avgVoltage, 4); //1.725 for pH=7.12 and 0.559 for pH 3.97
+
         
         // Convert voltage to pH using linear calibration
-        lastPH = PH_NEUTRAL + ((avgVoltage - VOLTAGE_NEUTRAL) * PH_SLOPE);
+        lastPH =  (avgVoltage* PH_SLOPE) + VOLTAGE_NEUTRAL;
         
         // Clamp pH to realistic range
         if (lastPH < 0) lastPH = 0;
